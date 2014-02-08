@@ -1,0 +1,11 @@
+# Files to ignore
+.DS_Store
+*~
+.classpath
+.idea
+.project
+.settings
+.metadata
+.swp
+*.iml
+tags
