@@ -1,0 +1,4 @@
+bashrc
+======
+
+Linux settings
