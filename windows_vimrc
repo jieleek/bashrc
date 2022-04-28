@@ -1,0 +1,38 @@
+set nocompatible
+source $VIMRUNTIME/vimrc_example.vim
+" source $VIMRUNTIME/mswin.vim
+behave mswin
+
+set guifont=Cascadia\ Mono:h12
+set noerrorbells visualbell t_vb=
+set columns=132
+set lines=35
+set expandtab
+set cursorline
+set autoindent
+set display+=lastline
+set guioptions+=m
+set guioptions-=T
+set guioptions-=r
+set guioptions+=e
+
+set linespace=9
+set ruler
+set colorcolumn=80
+set laststatus=2
+set relativenumber
+set ignorecase
+set infercase
+set smartcase
+set gdefault
+set incsearch
+set showmatch
+set hlsearch
+
+syntax on
+filetype on
+filetype indent on
+filetype plugin on
+
+colorscheme desert
+hi ColorColumn guibg=grey18
