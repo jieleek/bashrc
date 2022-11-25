@@ -15,3 +15,12 @@ Remove-Item Alias:cat
 Remove-Item Alias:mv
 Remove-Item Alias:rm
 Remove-Item Alias:echo
+Remove-Item Alias:foreach
+Remove-Item Alias:man
+Remove-Item Alias:mount
+Remove-Item Alias:ps
+Remove-Item Alias:pushd
+Remove-Item Alias:pwd
+Remove-Item Alias:set
+Remove-Item Alias:start
+Remove-Item Alias:where
