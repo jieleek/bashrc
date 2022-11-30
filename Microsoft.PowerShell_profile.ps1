@@ -24,3 +24,9 @@ Remove-Item Alias:pwd
 Remove-Item Alias:set
 Remove-Item Alias:start -Force
 Remove-Item Alias:where -Force
+function prompt { "PS $(Get-Location)`r`n$ " }
+# git prompt
+# Import-Module posh-git
+# Add-PoshGitToProfile -AllHost
+# oh-my-posh init pwsh | Invoke-Expression
+# oh-my-posh init pwsh --config 'aliens\jandedobbeleer.omp.json' | Invoke-Expression
