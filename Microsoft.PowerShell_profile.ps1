@@ -7,6 +7,7 @@ Set-PSReadLineKeyHandler -Key Tab -Function Complete
 Remove-Item Alias:curl
 Remove-Item Alias:ls
 Remove-Item Alias:cp
+Remove-Item Alias:gl -Force
 Remove-Item Alias:diff -Force
 Remove-Item Alias:sort -Force
 Remove-Item Alias:tee -Force
@@ -24,6 +25,9 @@ Remove-Item Alias:pwd
 Remove-Item Alias:set
 Remove-Item Alias:start -Force
 Remove-Item Alias:where -Force
+function gl() {
+	& git log --oneline --all --graph --decorate
+}
 function Write-BranchName () {
     try {
         $branch = git rev-parse --abbrev-ref HEAD
