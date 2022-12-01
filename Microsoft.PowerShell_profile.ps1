@@ -34,12 +34,17 @@ function Write-BranchName () {
             Write-Host " ($branch)" -ForegroundColor "red"
         }
         else {
+            if ($branch) {
             # we're on an actual branch, so print it
-            Write-Host " ($branch)" -ForegroundColor "yellow"
+				Write-Host " ($branch)" -ForegroundColor "yellow"
+            } else {
+				Write-Host
+            }
         }
     } catch {
         # we'll end up here if we're in a newly initiated git repo
-        Write-Host " (no branches yet)" -ForegroundColor "yellow"
+        # Write-Host " (no branches yet)" -ForegroundColor "yellow"
+        Write-Host
     }
 }
 
@@ -49,38 +54,12 @@ function prompt {
     $userPrompt = "$('$' * ($nestedPromptLevel + 1)) "
 
     Write-Host "`n$base" -NoNewline
-
-    if (Test-Path .git) {
-        Write-Host $path -NoNewline
-        Write-BranchName
-    }
-    else {
-        # we're not in a repo so don't bother displaying branch name/sha
-        Write-Host $path
-    }
-
-    return $userPrompt
-}
-function prompt1 {
-    $base = "PS "
-    $path = "$($executionContext.SessionState.Path.CurrentLocation)"
-    $userPrompt = "$('>' * ($nestedPromptLevel + 1)) "
-
-    Write-Host "`n$base" -NoNewline
-
-    if (Test-Path .git) {
-        Write-Host $path -NoNewline -ForegroundColor "green"
-        Write-BranchName
-    }
-    else {
-        # we're not in a repo so don't bother displaying branch name/sha
-        Write-Host $path -ForegroundColor "green"
-    }
+    Write-Host $path -NoNewline
+    Write-BranchName
 
     return $userPrompt
 }
 function prompt2 { "PS $(Get-Location)`r`n$ " }
-
 # git prompt
 # Import-Module posh-git
 # Add-PoshGitToProfile -AllHost
