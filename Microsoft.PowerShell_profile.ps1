@@ -2,6 +2,9 @@
 Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Key Escape,Ctrl+p -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
+# vpnkit
+# wsl.exe -l --running
+# wsl.exe -d wsl-vpnkit service wsl-vpnkit start
 # After install z.lua
 Invoke-Expression (& { (lua $HOME\scoop\apps\z.lua\current\z.lua --init powershell enhanced once) -join "`n" })
 Remove-Item Alias:curl
