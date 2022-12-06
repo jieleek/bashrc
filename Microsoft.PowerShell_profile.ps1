@@ -2,6 +2,7 @@
 Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Key Escape,Ctrl+p -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
+Set-PSReadlineOption -BellStyle None
 # vpnkit
 # wsl.exe -l --running
 # wsl.exe -d wsl-vpnkit service wsl-vpnkit start
