@@ -32,27 +32,31 @@ Remove-Item Alias:where -Force
 function gl() {
 	& git log --oneline --all --graph --decorate
 }
-function Write-BranchName () {
+function Write-BranchName ($p1, $p2) {
+
     try {
         $branch = git rev-parse --abbrev-ref HEAD
 
         if ($branch -eq "HEAD") {
             # we're probably in detached HEAD state, so print the SHA
             $branch = git rev-parse --short HEAD
+            Write-Host "$p1$p2" -NoNewLine
             Write-Host " ($branch)" -ForegroundColor "red"
         }
         else {
             if ($branch) {
             # we're on an actual branch, so print it
+
+				Write-Host "$p1$p2" -NoNewLine
 				Write-Host " ($branch)" -ForegroundColor "yellow"
             } else {
-				Write-Host
+				Write-Host "$p1$p2"
             }
         }
     } catch {
         # we'll end up here if we're in a newly initiated git repo
         # Write-Host " (no branches yet)" -ForegroundColor "yellow"
-        Write-Host
+        Write-Host "$p1$p2"
     }
 }
 
@@ -61,12 +65,13 @@ function prompt {
     $path = "$($executionContext.SessionState.Path.CurrentLocation)"
     $userPrompt = "$('$' * ($nestedPromptLevel + 1)) "
 
-    Write-Host "`n$base" -NoNewline
-    Write-Host $path -NoNewline
-    Write-BranchName
+    # Write-Host "`n$base" -NoNewline
+    # Write-Host $path -NoNewline
+    Write-BranchName "`n$base" $path
 
     return $userPrompt
 }
+
 function prompt2 { "PS $(Get-Location)`r`n$ " }
 # git prompt
 # Import-Module posh-git
