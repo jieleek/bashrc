@@ -1,0 +1,3 @@
+* :not(i):not(pre):not(pre *):not(code):not(code *) {
+    font-family: "Source Han Sans CN" !important;
+}
