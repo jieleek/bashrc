@@ -1,3 +1,4 @@
+# Use commmand `brew leaves -r` to output the list
 ack
 aliyun-cli
 ansible
