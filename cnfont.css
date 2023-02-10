@@ -1,0 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap|Noto Sans SC');
+* :not(i):not(pre):not(pre *):not(code):not(code *) {
+    font-family: "Noto Sans SC", "1Source Han Sans CN SemiLight" !important;
+}
