@@ -1,6 +1,7 @@
 # ~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Key Escape,Ctrl+p -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Chord Escape,p -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
 Set-PSReadlineOption -BellStyle None
 # vpnkit
