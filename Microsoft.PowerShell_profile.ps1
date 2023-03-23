@@ -5,18 +5,27 @@ Set-PSReadLineKeyHandler -Chord 'Escape,p' -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
 Set-PSReadlineOption -BellStyle None
 Invoke-Expression (& { (lua C:\Users\jie.li\scoop\apps\z.lua\current\z.lua --init powershell enhanced once) -join "`n" })
-# Remove-Item Alias:curl
+Remove-Item Alias:curl
 Remove-Item Alias:ls
 Remove-Item Alias:cp
 Remove-Item Alias:gl -Force
 Remove-Item Alias:diff -Force
 Remove-Item Alias:sort -Force
 Remove-Item Alias:tee -Force
-# Remove-Item Alias:wget
+Remove-Item Alias:wget
 Remove-Item Alias:cat
 Remove-Item Alias:mv
 Remove-Item Alias:rm
 Remove-Item Alias:echo
+Remove-Item Alias:foreach -Force
+Remove-Item Alias:man
+Remove-Item Alias:mount
+Remove-Item Alias:ps
+Remove-Item Alias:pushd
+Remove-Item Alias:pwd
+Remove-Item Alias:set
+Remove-Item Alias:start -Force
+Remove-Item Alias:where -Force
 
 #region conda initialize
 # !! Contents within this block are managed by 'conda init' !!
