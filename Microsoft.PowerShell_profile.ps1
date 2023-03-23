@@ -1,7 +1,7 @@
 # ~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 Set-PSReadlineOption -PredictionSource History
 Set-PSReadLineOption -EditMode Emacs
-Set-PSReadLineKeyHandler -Key Escape,Ctrl+p -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Chord 'Escape,p' -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
 Set-PSReadlineOption -BellStyle None
 Invoke-Expression (& { (lua C:\Users\jie.li\scoop\apps\z.lua\current\z.lua --init powershell enhanced once) -join "`n" })
