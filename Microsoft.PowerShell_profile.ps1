@@ -4,7 +4,7 @@ Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Chord 'Escape,p' -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
 Set-PSReadlineOption -BellStyle None
-Invoke-Expression (& { (lua C:\Users\jie.li\scoop\apps\z.lua\current\z.lua --init powershell enhanced once) -join "`n" })
+Invoke-Expression (& { (lua E:\scoop\apps\z.lua\current\z.lua --init powershell enhanced once) -join "`n" })
 Remove-Item Alias:curl
 Remove-Item Alias:ls
 Remove-Item Alias:cp
@@ -29,8 +29,8 @@ Remove-Item Alias:where -Force
 
 #region conda initialize
 # !! Contents within this block are managed by 'conda init' !!
-If (Test-Path "C:\Users\jie.li\scoop\apps\miniconda3\current\Scripts\conda.exe") {
-    (& "C:\Users\jie.li\scoop\apps\miniconda3\current\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | ?{$_} | Invoke-Expression
+If (Test-Path "E:\scoop\apps\miniconda3\current\Scripts\conda.exe") {
+    (& "E:\scoop\apps\miniconda3\current\Scripts\conda.exe" "shell.powershell" "hook") | Out-String | ?{$_} | Invoke-Expression
 }
 #endregion
 
