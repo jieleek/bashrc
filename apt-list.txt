@@ -1,0 +1,11 @@
+Commandline: apt install vim
+Commandline: apt install build-essential procps curl file git   # linuxbrew
+Commandline: apt install tmux
+Commandline: apt install dos2unix
+Commandline: apt install nmap
+Commandline: apt install jq
+Commandline: apt install silversearcher-ag
+Commandline: apt install tig
+Commandline: apt install mycli
+Commandline: apt install awscli
+Commandline: apt install golang-go
