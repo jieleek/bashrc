@@ -4,7 +4,15 @@ Set-PSReadLineOption -EditMode Emacs
 Set-PSReadLineKeyHandler -Chord 'Escape,p' -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
 Set-PSReadlineOption -BellStyle None
-Invoke-Expression (& { (lua E:\scoop\apps\z.lua\current\z.lua --init powershell enhanced once) -join "`n" })
+# After install z.lua
+$filePath = "C:\Users\jiele\scoop\apps\z.lua\current\z.lua"
+if (Test-Path -Path $filePath) {
+    Invoke-Expression (& { (lua $filePath --init powershell enhanced once) -join "`n" })
+}
+$filePath = "E:\Scoop\apps\z.lua\current\z.lua"
+if (Test-Path -Path $filePath) {
+    Invoke-Expression (& { (lua $filePath --init powershell enhanced once) -join "`n" })
+}
 Remove-Item Alias:curl
 Remove-Item Alias:ls
 Remove-Item Alias:cp
