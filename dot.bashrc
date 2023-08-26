@@ -19,8 +19,21 @@ export JAVA8_HOME JAVA11_HOME
 # Cleanup all Windows PATH environment
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
+# Run following line to disable PS1 change by conda
+# $ conda config --set changeps1 false
+
 function parse_git_branch() {
      git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+function parse_git_branch_and_conda() {
+    local branchname=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+    if [ ! "${branchname}" == "" ]
+    then
+        echo -e " (g ${branchname} c $CONDA_DEFAULT_ENV)"
+    else
+        echo " (c $CONDA_DEFAULT_ENV)"
+    fi
 }
 
 export HISTSIZE=9999
