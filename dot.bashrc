@@ -36,6 +36,9 @@ function parse_git_branch_and_conda1() {
     fi
 }
 
+# check color code using following command
+# for c in {0..255}; do tput setaf $c; tput setaf $c | cat -v; echo =$c; done
+
 function parse_git_branch_and_conda() {
     local red=$(tput setaf 9)
     local blue=$(tput setaf 12)
