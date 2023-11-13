@@ -103,6 +103,10 @@ function prompt {
             $gitBranch = ''
         }
     }
+    if ($gitBranch -eq "HEAD") {
+            # we're probably in detached HEAD state, so print the SHA
+            $gitBranch = git rev-parse --short HEAD
+    }    
 
     # Conda environment
     $condaEnv = $env:CONDA_DEFAULT_ENV
