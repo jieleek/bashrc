@@ -85,6 +85,45 @@ function Write-BranchName ($p1, $p2, $conda) {
 }
 
 function prompt {
+    # Define colors
+    $dirColor = "`e[38;5;190m"
+    $gitBranchColor = "`e[38;5;78m"
+    $condaEnvColor = "`e[38;5;177m"
+    $resetColor = "`e[0m"
+
+    # Current path
+    $currentPath = $ExecutionContext.SessionState.Path.CurrentLocation.Path
+
+    # Git branch
+    $gitBranch = ''
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+        try {
+            $gitBranch = & git rev-parse --abbrev-ref HEAD
+        } catch {
+            $gitBranch = ''
+        }
+    }
+
+    # Conda environment
+    $condaEnv = $env:CONDA_DEFAULT_ENV
+    if (-not $condaEnv) {
+        $condaEnv = ''
+    }
+
+    # Construct the prompt
+    $promptString = "`nPS ${dirColor}$currentPath${resetColor}"
+    if ($gitBranch -and $condaEnv) {
+        $promptString += " (${gitBranchColor}$gitBranch${resetColor} ${condaEnvColor}$condaEnv${resetColor})"
+    } elseif ($gitBranch) {
+		$promptString += " (${gitBranchColor}$gitBranch${resetColor})"
+    } elseif ($condaEnv) {
+		$promptString += " (${condaEnvColor}$condaEnv${resetColor})"
+    }
+
+    return "$promptString`n$ "
+}
+
+function prompt1 {
     $base = "PS "
     $path = "$($executionContext.SessionState.Path.CurrentLocation)"
     $userPrompt = "$('$' * ($nestedPromptLevel + 1)) "
