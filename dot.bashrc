@@ -38,6 +38,7 @@ function parse_git_branch_and_conda() {
 
 export HISTSIZE=9999
 export PS1="\n\u@oracle \[\033[32m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\] \n$ "
+# export PS1="\n$PS1 \[\033[33m\]\$(parse_git_branch_and_conda)\[\033[00m\] \n$ "
 
 export PERL_LOCAL_LIB_ROOT="$PERL_LOCAL_LIB_ROOT:/home/noname/perl5";
 export PERL_MB_OPT="--install_base /home/noname/perl5";
