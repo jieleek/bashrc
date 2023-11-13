@@ -2,4 +2,5 @@ changeps1: false
 channel_priority: strict
 channels:
   - conda-forge
+  - bioconda
   - defaults
