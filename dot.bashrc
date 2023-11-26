@@ -22,41 +22,27 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/ga
 # Run following line to disable PS1 change by conda
 # $ conda config --set changeps1 false
 
-function parse_git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
-
-function parse_git_branch_and_conda1() {
-    local branchname=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
-    if [ ! "${branchname}" == "" ]
-    then
-        echo -e " (g ${branchname} c $CONDA_DEFAULT_ENV)"
-    else
-        echo " (c $CONDA_DEFAULT_ENV)"
-    fi
-}
-
 # check color code using following command
 # for c in {0..255}; do tput setaf $c; tput setaf $c | cat -v; echo =$c; done
 
 function parse_git_branch_and_conda() {
-    local red=$(tput setaf 9)
-    local blue=$(tput setaf 12)
+    local red=$(tput setaf 1)
+    local blue=$(tput setaf 6)
+    local purple=$(tput setaf 4)
     local reset=$(tput sgr0)
     local branchname=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+    local time0=$(date +%H:%M)
     if [ ! "${branchname}" == "" ]
     then
-        echo " (${red}${branchname}${reset} ${blue}$CONDA_DEFAULT_ENV${reset})"
+        echo " ${red}${branchname}${reset} ${blue}$CONDA_DEFAULT_ENV${reset} ${purple}${time0}${reset}"
     else
-        echo " (${blue}$CONDA_DEFAULT_ENV${reset})"
+        echo " ${blue}$CONDA_DEFAULT_ENV${reset} ${purple}${time0}${reset}"
     fi
 }
 
 
 export HISTSIZE=9999
-export PS1="\n\u@debian $(tput setaf 190)\w$(tput sgr0)\$(parse_git_branch_and_conda) \n$ "
-# export PS1="\n\u@oracle \[\033[32m\]\w\[\033[33m\]\$(parse_git_branch)\[\033[00m\] \n$ "
-# export PS1="\n$PS1 \[\033[33m\]\$(parse_git_branch_and_conda)\[\033[00m\] \n$ "
+export PS1="\n\u@debian $(tput setaf 3)\w$(tput sgr0)\$(parse_git_branch_and_conda) \n$ "
 
 export PERL_LOCAL_LIB_ROOT="$PERL_LOCAL_LIB_ROOT:/home/noname/perl5";
 export PERL_MB_OPT="--install_base /home/noname/perl5";
