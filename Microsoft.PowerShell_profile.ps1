@@ -84,6 +84,29 @@ function Write-BranchName ($p1, $p2, $conda) {
     }
 }
 
+function Set-JDKVersion {
+    param (
+        [Parameter(Mandatory=$true, Position=0)]
+        [int]$VersionNumber
+    )
+
+    $User = 'noname' # Replace with your username or pass as a parameter
+    $JDKPath = "C:\Users\$User\scoop\apps\temurin${VersionNumber}-jdk\current"
+
+    if(Test-Path $JDKPath) {
+        # Set JAVA_HOME to the specified JDK path
+        $env:JAVA_HOME = $JDKPath
+
+        # Prepend the JDK's bin directory to the Path environment variable
+        $env:Path = "$env:JAVA_HOME\bin;$env:Path"
+
+        Write-Host "JDK switched to version $VersionNumber."
+    } else {
+        Write-Host "The specified JDK version $VersionNumber does not exist at $JDKPath"
+    }
+}
+
+
 function prompt {
     # Define colors
     $dirColor = "`e[38;5;190m"
