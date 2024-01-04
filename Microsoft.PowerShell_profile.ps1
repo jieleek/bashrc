@@ -84,7 +84,7 @@ function Write-BranchName ($p1, $p2, $conda) {
     }
 }
 
-function Set-JDKVersion {
+function Switch-JDKVersion {
     param (
         [Parameter(Mandatory=$true, Position=0)]
         [int]$VersionNumber
