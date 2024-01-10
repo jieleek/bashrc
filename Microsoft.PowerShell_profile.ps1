@@ -35,6 +35,19 @@ Remove-Item Alias:set
 Remove-Item Alias:start -Force
 Remove-Item Alias:where -Force
 
+# used for light color theme
+Set-PSReadLineOption -Colors @{
+  Command            = 'Magenta'
+  Number             = 'DarkGray'
+  Member             = 'DarkGray'
+  Operator           = 'DarkGray'
+  Type               = 'DarkGray'
+  Variable           = 'DarkGreen'
+  Parameter          = 'DarkGreen'
+  ContinuationPrompt = 'DarkGray'
+  Default            = 'DarkGray'
+}
+
 #region conda initialize
 # !! Contents within this block are managed by 'conda init' !!
 If (Test-Path "E:\scoop\apps\miniconda3\current\Scripts\conda.exe") {
