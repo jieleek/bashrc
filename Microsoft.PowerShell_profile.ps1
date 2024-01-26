@@ -119,7 +119,10 @@ function Switch-JDKVersion {
     }
 }
 
-
+# For Windows PowerShell 5.1, ansi color can be implemented as
+# $Esc=[char]0x1b
+# $dirColor = "$Esc[38;5;3m"
+# $resetColor = "$Esc[0m"
 function prompt {
     # Define colors
     $dirColor = "`e[38;5;190m"
