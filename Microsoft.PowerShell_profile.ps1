@@ -38,14 +38,14 @@ Remove-Item Alias:where -Force
 # used for light color theme
 Set-PSReadLineOption -Colors @{
   Command            = 'Magenta'
-  Number             = 'DarkGray'
-  Member             = 'DarkGray'
-  Operator           = 'DarkGray'
-  Type               = 'DarkGray'
+  Number             = 'DarkBlue'
+  Member             = 'DarkBlue'
+  Operator           = 'DarkBlue'
+  Type               = 'DarkBlue'
   Variable           = 'DarkGreen'
   Parameter          = 'DarkGreen'
-  ContinuationPrompt = 'DarkGray'
-  Default            = 'DarkGray'
+  ContinuationPrompt = 'DarkBlue'
+  Default            = 'DarkBlue'
 }
 
 #region conda initialize
