@@ -1,0 +1,5 @@
+scoop install busybox
+
+scoop shim add gfind 'path\to\busybox.exe' '--' find
+
+### busybox find does not work with Windows junctions (mklink /j)
