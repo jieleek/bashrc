@@ -20,6 +20,7 @@
     "forwardPorts": [3000, 9229],
 
     "postCreateCommand": "echo Hello",
+    "runArgs": ["--name", "hello-world","-p", "3000:3000", "-p", "9229:9229"],
 
     "remoteUser": "node",
 
