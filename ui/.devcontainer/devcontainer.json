@@ -1,0 +1,28 @@
+{
+    "name": "UI Development",
+    "dockerFile": "Dockerfile",
+    "context": ".",
+    "workspaceFolder": "/workspace",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    },
+
+    "forwardPorts": [3000, 9229],
+
+    "postCreateCommand": "echo Hello",
+
+    "remoteUser": "node",
+
+    // Use 'postStartCommand' to run commands after the container is started
+    "postStartCommand": "echo Hello"
+}
