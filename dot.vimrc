@@ -114,9 +114,11 @@ function! EncryptLines() range
             continue
         endif
         let encrypted = system('echo ' . shellescape(line) . ' | openssl enc -aes-256-cbc -pbkdf2 -a -salt -pass pass:' . shellescape(password))
-        " Add {AES} prefix and remove trailing newline
-        let encrypted = '{AES}' . substitute(encrypted, '\n\+$', '', '')
-        call setline(line_num, encrypted)
+        let cleaned = substitute(encrypted, '[[:cntrl:]]', '', 'g')
+        let cleaned = substitute(cleaned, '\r', '', 'g')
+        let cleaned = substitute(cleaned, '\n\+$', '', '')
+        let cleaned = '{AES}' . cleaned
+        call setline(line_num, cleaned)
     endfor
 endfunction
 
