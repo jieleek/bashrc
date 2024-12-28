@@ -73,3 +73,90 @@ function MyDiff()
   silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 endfunction
 
+""""""""""""""""""""""""""""""""""
+" Disable swap file
+set noswapfile
+
+" Disable backup files
+set nobackup
+set nowritebackup
+
+" Disable viminfo file
+set viminfo=
+" Or if you want minimal viminfo without file contents:
+" set viminfo='0
+
+" Disable undo files
+set noundofile
+
+
+let s:stored_password = ''
+
+function! s:GetPassword()
+    if empty(s:stored_password)
+        let s:stored_password = inputsecret('Enter encryption password: ')
+    endif
+    return s:stored_password
+endfunction
+
+function! EncryptLines() range
+    let password = s:GetPassword()
+    if empty(password)
+        echo "Encryption cancelled"
+        return
+    endif
+
+    " Process each line in the selection
+    for line_num in range(a:firstline, a:lastline)
+        let line = getline(line_num)
+        " Skip if line is already encrypted
+        if line =~ '^{AES}'
+            continue
+        endif
+        let encrypted = system('echo ' . shellescape(line) . ' | openssl enc -aes-256-cbc -pbkdf2 -a -salt -pass pass:' . shellescape(password))
+        " Add {AES} prefix and remove trailing newline
+        let encrypted = '{AES}' . substitute(encrypted, '\n\+$', '', '')
+        call setline(line_num, encrypted)
+    endfor
+endfunction
+
+function! DecryptLines() range
+    let password = s:GetPassword()
+    if empty(password)
+        echo "Decryption cancelled"
+        return
+    endif
+
+    " Process each line in the selection
+    for line_num in range(a:firstline, a:lastline)
+        let line = getline(line_num)
+        " Only decrypt lines starting with {AES}
+        if line !~ '^{AES}'
+            continue
+        endif
+        " Remove {AES} prefix before decryption
+        let encrypted = substitute(line, '^{AES}', '', '')
+        let decrypted = system('echo ' . shellescape(encrypted) . ' | openssl enc -aes-256-cbc -pbkdf2 -a -d -salt -pass pass:' . shellescape(password))
+        call setline(line_num, substitute(decrypted, '\n\+$', '', ''))
+    endfor
+endfunction
+
+function! ClearStoredPassword()
+    let s:stored_password = ''
+    echo "Stored password cleared"
+endfunction
+
+" Map to commands with range support
+command! -range EncryptLines <line1>,<line2>call EncryptLines()
+command! -range DecryptLines <line1>,<line2>call DecryptLines()
+command! ClearPassword call ClearStoredPassword()
+
+" Set space as leader - must be before other mappings
+let mapleader=" "
+let maplocalleader=" "
+
+" Key mappings for normal and visual mode
+nnoremap <leader>enc :EncryptLines<CR>
+nnoremap <leader>dec :DecryptLines<CR>
+vnoremap <leader>enc :EncryptLines<CR>
+vnoremap <leader>dec :DecryptLines<CR>
