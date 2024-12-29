@@ -109,14 +109,16 @@ function! EncryptLines() range
     " Process each line in the selection
     for line_num in range(a:firstline, a:lastline)
         let line = getline(line_num)
-        " Skip if line is already encrypted
-        if line =~ '^{AES}'
+        " Skip if line is labeled
+        if line !~ '^{SECRET}'
             continue
         endif
-        let encrypted = system('echo ' . shellescape(line) . ' | openssl enc -aes-256-cbc -pbkdf2 -a -salt -pass pass:' . shellescape(password))
+        let plaintext = substitute(line, '^{SECRET}', '', '')
+        let encrypted = system('echo ' . shellescape(plaintext) . ' | openssl enc -aes-256-cbc -pbkdf2 -a -salt -pass pass:' . shellescape(password))
         let cleaned = substitute(encrypted, '[[:cntrl:]]', '', 'g')
         let cleaned = substitute(cleaned, '\r', '', 'g')
         let cleaned = substitute(cleaned, '\n\+$', '', '')
+        " Add {AES} prefix
         let cleaned = '{AES}' . cleaned
         call setline(line_num, cleaned)
     endfor
@@ -139,7 +141,8 @@ function! DecryptLines() range
         " Remove {AES} prefix before decryption
         let encrypted = substitute(line, '^{AES}', '', '')
         let decrypted = system('echo ' . shellescape(encrypted) . ' | openssl enc -aes-256-cbc -pbkdf2 -a -d -salt -pass pass:' . shellescape(password))
-        call setline(line_num, substitute(decrypted, '\n\+$', '', ''))
+        let cleaned = '{SECRET}' . decrypted
+        call setline(line_num, substitute(cleaned, '\n\+$', '', ''))
     endfor
 endfunction
 
