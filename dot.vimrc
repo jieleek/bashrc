@@ -94,7 +94,19 @@ let s:stored_password = ''
 
 function! s:GetPassword()
     if empty(s:stored_password)
-        let s:stored_password = inputsecret('Enter encryption password: ')
+        let password1 = inputsecret('Enter encryption password: ')
+        if empty(password1)
+            echo "Password cannot be empty"
+            return ''
+        endif
+        
+        let password2 = inputsecret('Confirm encryption password: ')
+        if password1 != password2
+            echo "Passwords do not match!"
+            return ''
+        endif
+        
+        let s:stored_password = password1
     endif
     return s:stored_password
 endfunction
@@ -102,6 +114,7 @@ endfunction
 function! EncryptLines() range
     let password = s:GetPassword()
     if empty(password)
+        redraw
         echo "Encryption cancelled"
         return
     endif
@@ -127,6 +140,7 @@ endfunction
 function! DecryptLines() range
     let password = s:GetPassword()
     if empty(password)
+        redraw
         echo "Decryption cancelled"
         return
     endif
@@ -146,6 +160,32 @@ function! DecryptLines() range
     endfor
 endfunction
 
+function! AddSecretPrefix() range
+    " Process each line in the selection
+    for line_num in range(a:firstline, a:lastline)
+        let line = getline(line_num)
+        " Skip if line already has prefix
+        if line =~ '^{SECRET}'
+            continue
+        endif
+        " Add prefix
+        call setline(line_num, '{SECRET}' . line)
+    endfor
+endfunction
+
+function! RemoveSecretPrefix() range
+    " Process each line in the selection
+    for line_num in range(a:firstline, a:lastline)
+        let line = getline(line_num)
+        " Only remove prefix if it exists
+        if line =~ '^{SECRET}'
+            " Remove prefix using substitute
+            let cleaned = substitute(line, '^{SECRET}', '', '')
+            call setline(line_num, cleaned)
+        endif
+    endfor
+endfunction
+
 function! ClearStoredPassword()
     let s:stored_password = ''
     echo "Stored password cleared"
@@ -154,6 +194,8 @@ endfunction
 " Map to commands with range support
 command! -range EncryptLines <line1>,<line2>call EncryptLines()
 command! -range DecryptLines <line1>,<line2>call DecryptLines()
+command! -range AddSecret <line1>,<line2>call AddSecretPrefix()
+command! -range RemoveSecret <line1>,<line2>call RemoveSecretPrefix()
 command! ClearPassword call ClearStoredPassword()
 
 " Set space as leader - must be before other mappings
@@ -161,7 +203,11 @@ let mapleader=" "
 let maplocalleader=" "
 
 " Key mappings for normal and visual mode
-nnoremap <leader>enc :EncryptLines<CR>
-nnoremap <leader>dec :DecryptLines<CR>
-vnoremap <leader>enc :EncryptLines<CR>
-vnoremap <leader>dec :DecryptLines<CR>
+nnoremap <leader>ce :EncryptLines<CR>
+nnoremap <leader>cd :DecryptLines<CR>
+vnoremap <leader>ce :EncryptLines<CR>
+vnoremap <leader>cd :DecryptLines<CR>
+nnoremap <leader>ca :AddSecret<CR>
+nnoremap <leader>cr :RemoveSecret<CR>
+vnoremap <leader>ca :AddSecret<CR>
+vnoremap <leader>cr :RemoveSecret<CR>
