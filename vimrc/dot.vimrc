@@ -1,5 +1,4 @@
-source preference.vim
-source $VIMRUNTIME/mswin.vim
+source ~/.vim/preference.vim
 
 colorscheme railscasts
 set backspace=2

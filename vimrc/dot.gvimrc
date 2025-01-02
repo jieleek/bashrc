@@ -1,7 +1,6 @@
 " dot.gvimrc
-source preference.vim
-source guipref.vim
-source $VIMRUNTIME/mswin.vim
+source ~/.vim/preference.vim
+source ~/.vim/guipref.vim
 
 set guifont=Ubuntu\ Mono\ 11
 set guioptions-=m
