@@ -11,7 +11,8 @@ set autoindent
 set display+=lastline
 set ruler
 set laststatus=2
-set relativenumber
+" set relativenumber
+set number
 
 " Search settings
 set ignorecase
