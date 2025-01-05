@@ -1,5 +1,5 @@
-source preference.vim
-source guipref.vim
+source ~/.vim/preference.vim
+source ~/.vim/guipref.vim
 
 set guifont=Cascadia\ Mono:h12
 set guioptions+=m
