@@ -57,3 +57,6 @@ autocmd FileType scala setlocal shiftwidth=2 softtabstop=2
 " Custom file associations
 autocmd BufRead,BufNewFile *.gradle set filetype=groovy
 autocmd BufRead,BufNewFile *.erb set filetype=ruby
+
+" Disable file change detection
+autocmd FileChangedShell * :
