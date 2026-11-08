@@ -1,39 +1,31 @@
 # ~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
-Set-PSReadlineOption -PredictionSource History
-Set-PSReadLineOption -EditMode Emacs
+# Windows PowerShell 5.1 may have PSReadLine without prediction support.
+if ((Get-Command Set-PSReadLineOption).Parameters.ContainsKey('PredictionSource')) {
+    Set-PSReadLineOption -PredictionSource History
+}
+Set-PSReadLineOption -EditMode Emacs -BellStyle None
 Set-PSReadLineKeyHandler -Chord 'Escape,p' -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key Tab -Function Complete
-Set-PSReadlineOption -BellStyle None
 # After install z.lua
-$filePath = "C:\Users\jiele\scoop\apps\z.lua\current\z.lua"
-if (Test-Path -Path $filePath) {
-    Invoke-Expression (& { (lua $filePath --init powershell enhanced once) -join "`n" })
+foreach ($filePath in @(
+    'C:\Users\jiele\scoop\apps\z.lua\current\z.lua'
+    'E:\Scoop\apps\z.lua\current\z.lua'
+)) {
+    if (Test-Path -LiteralPath $filePath) {
+        Invoke-Expression ((& lua $filePath --init powershell enhanced once) -join "`n")
+    }
 }
-$filePath = "E:\Scoop\apps\z.lua\current\z.lua"
-if (Test-Path -Path $filePath) {
-    Invoke-Expression (& { (lua $filePath --init powershell enhanced once) -join "`n" })
+
+# Prefer external tools; tolerate aliases already removed by a previous load.
+foreach ($aliasName in @(
+    'curl', 'ls', 'cp', 'gl', 'diff', 'sort', 'tee', 'wget', 'cat', 'mv',
+    'rm', 'echo', 'foreach', 'man', 'mount', 'ps', 'pushd', 'pwd', 'set',
+    'start', 'where'
+)) {
+    if (Test-Path -LiteralPath "Alias:$aliasName") {
+        Remove-Item -LiteralPath "Alias:$aliasName" -Force
+    }
 }
-Remove-Item Alias:curl
-Remove-Item Alias:ls
-Remove-Item Alias:cp
-Remove-Item Alias:gl -Force
-Remove-Item Alias:diff -Force
-Remove-Item Alias:sort -Force
-Remove-Item Alias:tee -Force
-Remove-Item Alias:wget
-Remove-Item Alias:cat
-Remove-Item Alias:mv
-Remove-Item Alias:rm
-Remove-Item Alias:echo
-Remove-Item Alias:foreach -Force
-Remove-Item Alias:man
-Remove-Item Alias:mount
-Remove-Item Alias:ps
-Remove-Item Alias:pushd
-Remove-Item Alias:pwd
-Remove-Item Alias:set
-Remove-Item Alias:start -Force
-Remove-Item Alias:where -Force
 
 # used for light color theme
 Set-PSReadLineOption -Colors @{
@@ -64,37 +56,38 @@ New-Alias -Name ls -Value Invoke-LsColor
 function gl() {
 	& git log --oneline --all --graph --decorate
 }
-function Write-BranchName ($p1, $p2, $conda) {
-
-
+function Get-PromptGitInfo {
+    $previousExitCode = $global:LASTEXITCODE
     try {
-        $branch = git rev-parse --abbrev-ref HEAD
-
-        if ($branch -eq "HEAD") {
-            # we're probably in detached HEAD state, so print the SHA
-            $branch = git rev-parse --short HEAD
-            Write-Host "$p1$p2" -NoNewLine
-            Write-Host " ($branch)" -ForegroundColor "red" -NoNewLine
-            Write-Host " $conda" -ForegroundColor "green"
+        if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+            return
         }
-        else {
-            if ($branch) {
-            # we're on an actual branch, so print it
+        $branch = & git rev-parse --abbrev-ref HEAD 2>$null
+        if ($LASTEXITCODE -ne 0) { return }
 
-				Write-Host "$p1$p2" -NoNewLine
-                Write-Host " ($branch)" -ForegroundColor "yellow" -NoNewLine
-                Write-Host " $conda" -ForegroundColor "green"
-            } else {
-                Write-Host "$p1$p2" -NoNewLine
-                Write-Host " $conda" -ForegroundColor "green"
-            }
+        $isDetached = $branch -eq 'HEAD'
+        if ($isDetached) {
+            $branch = & git rev-parse --short HEAD 2>$null
+            if ($LASTEXITCODE -ne 0) { return }
         }
+
+        [PSCustomObject]@{ Name = $branch; IsDetached = $isDetached }
     } catch {
-        # we'll end up here if we're in a newly initiated git repo
-        # Write-Host " (no branches yet)" -ForegroundColor "yellow"
-        Write-Host "$p1$p2" -NoNewLine
-        Write-Host " $conda" -ForegroundColor "green"
+        # Missing Git, an unborn branch, or a non-repository directory.
+        return
+    } finally {
+        $global:LASTEXITCODE = $previousExitCode
     }
+}
+
+function Write-BranchName ($p1, $p2, $conda) {
+    $gitInfo = Get-PromptGitInfo
+    Write-Host "$p1$p2" -NoNewLine
+    if ($gitInfo) {
+        $branchColor = if ($gitInfo.IsDetached) { 'Red' } else { 'Yellow' }
+        Write-Host " ($($gitInfo.Name))" -ForegroundColor $branchColor -NoNewLine
+    }
+    Write-Host " $conda" -ForegroundColor Green
 }
 
 function Switch-JDKVersion {
@@ -119,48 +112,30 @@ function Switch-JDKVersion {
     }
 }
 
-# For Windows PowerShell 5.1, ansi color can be implemented as
-# $Esc=[char]0x1b
-# $dirColor = "$Esc[38;5;3m"
-# $resetColor = "$Esc[0m"
 function prompt {
-    # Define colors
-    $dirColor = "`e[38;5;190m"
-    $gitBranchColor = "`e[38;5;78m"
-    $condaEnvColor = "`e[38;5;177m"
-    $resetColor = "`e[0m"
+    # Windows PowerShell 5.1 needs an explicit ESC character for ANSI colors.
+    $esc = [char]27
+    $dirColor = "$esc[38;5;190m"
+    $gitBranchColor = "$esc[38;5;78m"
+    $condaEnvColor = "$esc[38;5;177m"
+    $resetColor = "$esc[0m"
 
     # Current path
     $currentPath = $ExecutionContext.SessionState.Path.CurrentLocation.Path
 
-    # Git branch
-    $gitBranch = ''
-    if (Get-Command git -ErrorAction SilentlyContinue) {
-        try {
-            $gitBranch = & git rev-parse --abbrev-ref HEAD
-        } catch {
-            $gitBranch = ''
-        }
+    # Assemble optional Git and Conda segments without duplicating layout.
+    $gitInfo = Get-PromptGitInfo
+    $segments = @()
+    if ($gitInfo) {
+        $segments += "$gitBranchColor$($gitInfo.Name)$resetColor"
     }
-    if ($gitBranch -eq "HEAD") {
-            # we're probably in detached HEAD state, so print the SHA
-            $gitBranch = git rev-parse --short HEAD
-    }    
-
-    # Conda environment
-    $condaEnv = $env:CONDA_DEFAULT_ENV
-    if (-not $condaEnv) {
-        $condaEnv = ''
+    if ($env:CONDA_DEFAULT_ENV) {
+        $segments += "$condaEnvColor$env:CONDA_DEFAULT_ENV$resetColor"
     }
 
-    # Construct the prompt
     $promptString = "`nPS ${dirColor}$currentPath${resetColor}"
-    if ($gitBranch -and $condaEnv) {
-        $promptString += " (${gitBranchColor}$gitBranch${resetColor} ${condaEnvColor}$condaEnv${resetColor})"
-    } elseif ($gitBranch) {
-		$promptString += " (${gitBranchColor}$gitBranch${resetColor})"
-    } elseif ($condaEnv) {
-		$promptString += " (${condaEnvColor}$condaEnv${resetColor})"
+    if ($segments.Count -gt 0) {
+        $promptString += " ($($segments -join ' '))"
     }
 
     return "$promptString`n$ "
@@ -171,18 +146,15 @@ function prompt1 {
     $path = "$($executionContext.SessionState.Path.CurrentLocation)"
     $userPrompt = "$('$' * ($nestedPromptLevel + 1)) "
 
-    # Write-Host "`n$base" -NoNewline
-    # Write-Host $path -NoNewline
-
+    $conda = ''
     if ($env:CONDA_PROMPT_MODIFIER) {
         # trim the leading and trailing space
         $conda = $env:CONDA_PROMPT_MODIFIER.Trim()
         # remove the parenthesis of the conda env name
         $conda = $conda.Substring(1, $conda.Length - 2)
-        Write-BranchName "`n$base" $path "[$conda]"
-    } else {
-        Write-BranchName "`n$base" $path ""
+        $conda = "[$conda]"
     }
+    Write-BranchName "`n$base" $path $conda
 
     return $userPrompt
 }
