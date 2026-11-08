@@ -1,5 +1,8 @@
 " dot.gvimrc
-source ~/.vim/preference.vim
+" Vim loads .vimrc before .gvimrc; also allow this preset to run by itself.
+if !exists('g:dot_vim_preferences_loaded')
+    source ~/.vim/preference.vim
+endif
 source ~/.vim/guipref.vim
 
 set guifont=Ubuntu\ Mono\ 11
@@ -17,12 +20,16 @@ nmap fe <ESC>:Explore<CR>
 nmap <C-n> <ESC>:cn<CR>
 nmap <C-p> <ESC>:cp<CR>
 
-let g:fuf_file_exclude = '\v\~$|\.(o|exe|dll|bak|class|png|orig|gz|gif|sw[po])$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|(^|[/\\])(target|build|bin)($|[/\\])'
-let g:fuf_dir_exclude = '\v(^|[/\\])\.(hg|git|bzr)($|[/\\])|[/\\])(target|build|bin)($|[/\\])'
+let g:fuf_file_exclude = '\v\~$|\.(o|exe|dll|bak|class|png|orig|gz|gif|sw[po])$'
+    \ . '|(^|[/\\])\.(hg|git|bzr)($|[/\\])'
+    \ . '|(^|[/\\])(target|build|bin)($|[/\\])'
+let g:fuf_dir_exclude = '\v(^|[/\\])\.(hg|git|bzr)($|[/\\])'
+    \ . '|[/\\])(target|build|bin)($|[/\\])'
 
 " Taglist settings
 let tlist_r_settings = 'r;f:function'
-let tlist_groovy_settings = 'groovy;p:package;c:class;i:inteface;f:function;v:variable'
+let tlist_groovy_settings =
+    \ 'groovy;p:package;c:class;i:inteface;f:function;v:variable'
 let Tlist_Show_One_File = 1
 let Tlist_WinWidth = 40
 let Tlist_Exit_OnlyWindow = 1

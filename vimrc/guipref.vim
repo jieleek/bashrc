@@ -1,9 +1,3 @@
 " Common GUI settings
-set columns=132
-set lines=35
-set guioptions-=T
-set guioptions-=r
-set guioptions+=e
-set linespace=9
-set colorcolumn=80
-
+set columns=132 lines=35 linespace=9 colorcolumn=80
+set guioptions-=T guioptions-=r guioptions+=e

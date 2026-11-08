@@ -2,61 +2,35 @@
 set nocompatible
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
-behave mswin
 
 " Basic settings
 set noerrorbells visualbell t_vb=
-set expandtab
-set cursorline
-set autoindent
+set expandtab autoindent cursorline number ruler laststatus=2
 set display+=lastline
-set ruler
-set laststatus=2
-" set relativenumber
-set number
 
 " Search settings
-set ignorecase
-set smartcase
-set gdefault
-set incsearch
-set showmatch
-set hlsearch
+set ignorecase smartcase gdefault incsearch showmatch hlsearch
 
 " File handling
 syntax on
-filetype on
-filetype indent on
-filetype plugin on
+filetype plugin indent on
 
+" Do not persist buffer contents, history, backups, or undo files.
+set noswapfile nobackup nowritebackup viminfo= noundofile
 
-" Disable swap file
-set noswapfile
+" Replace this configuration's autocommands when the file is reloaded.
+augroup DotVimPreferences
+    autocmd!
+    autocmd FileType groovy,java setlocal shiftwidth=4 softtabstop=4
+    autocmd FileType html,ruby,R,scala setlocal shiftwidth=2 softtabstop=2
+    autocmd FileType python setlocal tabstop=8 shiftwidth=4 softtabstop=4
 
-" Disable backup files
-set nobackup
-set nowritebackup
+    " Custom file associations
+    autocmd BufRead,BufNewFile *.gradle setlocal filetype=groovy
+    autocmd BufRead,BufNewFile *.erb setlocal filetype=ruby
 
-" Disable viminfo file
-set viminfo=
-" Or if you want minimal viminfo without file contents:
-" set viminfo='0
+    " Suppress the external file-change prompt.
+    autocmd FileChangedShell * :
+augroup END
 
-" Disable undo files
-set noundofile
-
-" File type specific settings
-autocmd FileType groovy setlocal shiftwidth=4 softtabstop=4
-autocmd FileType html setlocal shiftwidth=2 softtabstop=2
-autocmd FileType java setlocal shiftwidth=4 softtabstop=4
-autocmd FileType python setlocal tabstop=8 shiftwidth=4 softtabstop=4
-autocmd FileType ruby setlocal shiftwidth=2 softtabstop=2
-autocmd FileType R setlocal shiftwidth=2 softtabstop=2
-autocmd FileType scala setlocal shiftwidth=2 softtabstop=2
-
-" Custom file associations
-autocmd BufRead,BufNewFile *.gradle set filetype=groovy
-autocmd BufRead,BufNewFile *.erb set filetype=ruby
-
-" Disable file change detection
-autocmd FileChangedShell * :
+let g:dot_vim_preferences_loaded = 1
