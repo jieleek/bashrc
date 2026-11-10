@@ -85,7 +85,7 @@ function Write-BranchName ($p1, $p2, $conda) {
     Write-Host "$p1$p2" -NoNewLine
     if ($gitInfo) {
         $branchColor = if ($gitInfo.IsDetached) { 'Red' } else { 'Yellow' }
-        Write-Host " ($($gitInfo.Name))" -ForegroundColor $branchColor -NoNewLine
+        Write-Host " $($gitInfo.Name)" -ForegroundColor $branchColor -NoNewLine
     }
     Write-Host " $conda" -ForegroundColor Green
 }
@@ -113,36 +113,12 @@ function Switch-JDKVersion {
 }
 
 function prompt {
-    # Windows PowerShell 5.1 needs an explicit ESC character for ANSI colors.
-    $esc = [char]27
-    $dirColor = "$esc[38;5;190m"
-    $gitBranchColor = "$esc[38;5;78m"
-    $condaEnvColor = "$esc[38;5;177m"
-    $resetColor = "$esc[0m"
-
-    # Current path
     $currentPath = $ExecutionContext.SessionState.Path.CurrentLocation.Path
-
-    # Assemble optional Git and Conda segments without duplicating layout.
-    $gitInfo = Get-PromptGitInfo
-    $segments = @()
-    if ($gitInfo) {
-        $segments += "$gitBranchColor$($gitInfo.Name)$resetColor"
-    }
-    if ($env:CONDA_DEFAULT_ENV) {
-        $segments += "$condaEnvColor$env:CONDA_DEFAULT_ENV$resetColor"
-    }
-
-    $promptString = "`nPS ${dirColor}$currentPath${resetColor}"
-    if ($segments.Count -gt 0) {
-        $promptString += " ($($segments -join ' '))"
-    }
-
-    return "$promptString`n$ "
+    Write-BranchName "`n" $currentPath $env:CONDA_DEFAULT_ENV
+    return '$ '
 }
 
 function prompt1 {
-    $base = "PS "
     $path = "$($executionContext.SessionState.Path.CurrentLocation)"
     $userPrompt = "$('$' * ($nestedPromptLevel + 1)) "
 
@@ -154,9 +130,9 @@ function prompt1 {
         $conda = $conda.Substring(1, $conda.Length - 2)
         $conda = "[$conda]"
     }
-    Write-BranchName "`n$base" $path $conda
+    Write-BranchName "`n" $path $conda
 
     return $userPrompt
 }
-function prompt2 { "PS $(Get-Location)`r`n$ " }
+function prompt2 { "$(Get-Location)`r`n$ " }
 
